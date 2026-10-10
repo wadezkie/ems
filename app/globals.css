@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* EMS brand (sampled from the Figma login frame) */
+  --color-brand: #023482; /* left panel */
+  --color-primary: #0a52de; /* primary button */
+  --color-primary-dark: #0842b4;
+  --color-ink: #040841; /* headings, labels */
+  --color-body: #1e1e1e;
+  --color-link: #4e7be0;
+  --color-muted: #757575; /* placeholders, field icons */
+  --color-field: #fafafa;
+  --color-field-border: #d9d9d9;
+  --color-danger: #fe3439;
+  --color-success: #15803d;
+
+  /* Portal dashboards (sampled from the Figma DASHBOARD / DASHBOARD DM frames) */
+  --color-nav-active: #1059e6; /* selected sidebar item */
+  --color-sidebar-muted: #c7d2f1; /* position under the name */
+  --color-heading: #1430b0; /* card and panel titles */
+  --color-subtle: #3d55d6; /* small blue text (dates, notes) */
+  --color-card-border: #7c7c7c;
+  --color-amber: #f2a900; /* leave status / leave request */
+  --color-amber-soft: #fac88a; /* "Pending" badge */
+  --color-amber-ink: #7a4f0e;
+  --color-present: #16b316;
+  --color-violet: #8b1fe6; /* on leave */
+}
+
+/*
+ * Figma type sizes (text-f<px>), tied to --spacing so they scale with the
+ * login layout (see app/login/page.tsx). The calc resolves on the element that
+ * uses the class. Small sizes keep a readable floor.
+ */
+@utility text-f12 {
+  font-size: max(11px, calc(var(--spacing) * 3));
+}
+
+@utility text-f14 {
+  font-size: max(12px, calc(var(--spacing) * 3.5));
+}
+
+@utility text-f16 {
+  font-size: max(12px, calc(var(--spacing) * 4));
+}
+
+@utility text-f18 {
+  font-size: max(12px, calc(var(--spacing) * 4.5));
+}
+
+@utility text-f20 {
+  font-size: max(13px, calc(var(--spacing) * 5));
+}
+
+@utility text-f22 {
+  font-size: calc(var(--spacing) * 5.5);
+}
+
+@utility text-f24 {
+  font-size: max(14px, calc(var(--spacing) * 6));
+}
+
+@utility text-f28 {
+  font-size: max(15px, calc(var(--spacing) * 7));
+}
+
+@utility text-f36 {
+  font-size: max(20px, calc(var(--spacing) * 9));
+}
+
+@utility text-f32 {
+  font-size: calc(var(--spacing) * 8);
+}
+
+@utility text-f40 {
+  font-size: calc(var(--spacing) * 10);
+}
+
+@utility text-f64 {
+  font-size: calc(var(--spacing) * 16);
+}
+
+@layer base {
+  body {
+    background-color: #fff;
+    color: var(--color-body);
+    font-family: var(--font-sans);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
