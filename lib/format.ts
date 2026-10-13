@@ -77,3 +77,41 @@ export function initials(name: string) {
       .join("") || "?"
   );
 }
+
+/** "Jun 05, 2026" (Figma task table). */
+export function formatShortDate(iso: string) {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" }).format(
+    calendarDate(iso),
+  );
+  return parts;
+}
+
+/** "Oct 13, 2026 10:30 AM" in Manila time. */
+export function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: TIME_ZONE,
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+/** Figma labels for task statuses ("pending" is shown as Not Started). */
+export const TASK_STATUS_LABEL = {
+  pending: "Not Started",
+  in_progress: "In Progress",
+  for_review: "For Review",
+  needs_revision: "Needs Revision (Declined)",
+  completed: "Completed (Approved)",
+} as const;
+
+/** Short labels for the task table. */
+export const TASK_STATUS_SHORT = {
+  pending: "Not Started",
+  in_progress: "In Progress",
+  for_review: "For Review",
+  needs_revision: "Needs Revision",
+  completed: "Completed",
+} as const;

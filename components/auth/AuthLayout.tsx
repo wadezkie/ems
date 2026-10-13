@@ -2,6 +2,15 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { BrandPersonIcon } from "./icons";
 
+/** Panel artwork per auth page (transparent PNGs in public/images/login). */
+const ILLUSTRATIONS = {
+  login: { src: "/images/login/login.png", width: 278, height: 318 },
+  activate: { src: "/images/login/activate.png", width: 275, height: 351 },
+  change: { src: "/images/login/change.png", width: 250, height: 272 },
+} as const;
+
+export type AuthIllustration = keyof typeof ILLUSTRATIONS;
+
 /**
  * Figma auth frame (1440×1024): 516px brand panel + white form panel.
  * Shared by Login, Activate Account, and Change Default Credentials.
@@ -15,8 +24,10 @@ export function AuthLayout({
   panelText,
   title,
   subtitle,
+  illustration,
   children,
 }: {
+  illustration: AuthIllustration;
   panelTitle: string;
   panelText: ReactNode;
   title: string;
@@ -33,14 +44,13 @@ export function AuthLayout({
         <div className="hidden md:block">
           <h2 className="mt-19.5 text-f40 leading-[1.2] font-semibold">{panelTitle}</h2>
           <p className="mt-6.5 text-f22 leading-[1.6]">{panelText}</p>
-          {/* TODO(figma): replace with a 2x export of the Figma lock artwork (same path). */}
           <Image
-            src="/images/login/login-lock.png"
+            src={ILLUSTRATIONS[illustration].src}
             alt=""
-            width={160}
-            height={162}
+            width={ILLUSTRATIONS[illustration].width}
+            height={ILLUSTRATIONS[illustration].height}
             loading="eager"
-            className="mx-auto mt-24 size-40"
+            className="mx-auto mt-10 h-64 w-auto"
           />
           <p className="mt-4.5 text-f14">Secure - Reliable - Trusted</p>
         </div>

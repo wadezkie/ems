@@ -11,10 +11,19 @@ import { createClient } from "@/lib/supabase/server";
 
 export type LeaveType = "vacation" | "sick" | "emergency" | "other";
 export type LeaveStatus = "pending" | "approved" | "rejected" | "cancelled";
-export type TaskStatus = "pending" | "in_progress" | "completed";
+export type TaskStatus = "pending" | "in_progress" | "for_review" | "needs_revision" | "completed";
 export type AttendanceStatus = "present" | "late" | "absent" | "on_leave";
 
 type PersonRef = { first_name: string | null; last_name: string | null; username: string } | null;
+
+export type ReviewerRef = {
+  first_name: string | null;
+  last_name: string | null;
+  username: string;
+  position: string | null;
+  role: "employee" | "department_manager";
+  avatar_url: string | null;
+} | null;
 
 export type LeaveRow = {
   id: string;
@@ -24,8 +33,12 @@ export type LeaveRow = {
   reason: string;
   status: LeaveStatus;
   review_note: string | null;
+  reviewed_at: string | null;
+  attachment_path: string | null;
+  attachment_name: string | null;
   created_at: string;
   employee: PersonRef;
+  reviewer: ReviewerRef;
 };
 
 export type TaskRow = {
@@ -36,6 +49,8 @@ export type TaskRow = {
   priority: "low" | "medium" | "high";
   progress: number;
   due_date: string | null;
+  employee_remarks: string | null;
+  manager_feedback: string | null;
   assignee: PersonRef;
 };
 
@@ -72,10 +87,12 @@ export type EmployeeRow = {
 };
 
 const PERSON = "first_name, last_name, username";
-const LEAVE_COLUMNS = `id, leave_type, start_date, end_date, reason, status, review_note, created_at, employee:employees!leave_requests_employee_id_fkey(${PERSON})`;
-const TASK_COLUMNS = `id, title, description, status, priority, progress, due_date, assignee:employees!tasks_assigned_to_fkey(${PERSON})`;
+const LEAVE_COLUMNS = `id, leave_type, start_date, end_date, reason, status, review_note, reviewed_at, attachment_path, attachment_name, created_at, employee:employees!leave_requests_employee_id_fkey(${PERSON}), reviewer:employees!leave_requests_reviewed_by_fkey(${PERSON}, position, role, avatar_url)`;
+const TASK_COLUMNS = `id, title, description, status, priority, progress, due_date, employee_remarks, manager_feedback, assignee:employees!tasks_assigned_to_fkey(${PERSON})`;
 const ATTENDANCE_COLUMNS = `id, work_date, status, time_in, time_out, employee:employees!attendance_employee_id_fkey(${PERSON})`;
 const ANNOUNCEMENT_COLUMNS = `id, title, body, published_at, author:employees!announcements_author_id_fkey(${PERSON})`;
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function must<T>(result: { data: T | null; error: { message: string } | null }, label: string): T {
   if (result.error) throw new Error(`${label}: ${result.error.message}`);
@@ -151,6 +168,70 @@ export async function listMyLeave(user: CurrentUser) {
     .eq("employee_id", user.employeeRowId)
     .order("start_date", { ascending: false });
   return must(result, "my leave") as unknown as LeaveRow[];
+}
+
+export async function getMyTask(user: CurrentUser, id: string) {
+  if (!UUID.test(id)) return null;
+  const supabase = await createClient();
+  const result = await supabase.from("tasks").select(TASK_COLUMNS).eq("id", id).eq("assigned_to", user.employeeRowId).maybeSingle();
+  return must(result, "my task") as unknown as TaskRow | null;
+}
+
+export async function getMyLeave(user: CurrentUser, id: string) {
+  if (!UUID.test(id)) return null;
+  const supabase = await createClient();
+  const result = await supabase.from("leave_requests").select(LEAVE_COLUMNS).eq("id", id).eq("employee_id", user.employeeRowId).maybeSingle();
+  const leave = must(result, "my leave request") as unknown as LeaveRow | null;
+  if (!leave?.attachment_path) return leave ? { ...leave, attachmentUrl: null } : null;
+  // Short-lived link; storage RLS lets the owner (and their manager) read it.
+  const { data } = await supabase.storage.from("leave-attachments").createSignedUrl(leave.attachment_path, 600);
+  return { ...leave, attachmentUrl: data?.signedUrl ?? null };
+}
+
+export type ProfileDetails = {
+  phone: string | null;
+  date_of_birth: string | null;
+  address: string | null;
+};
+
+export async function getMyProfileDetails(user: CurrentUser) {
+  const supabase = await createClient();
+  const result = await supabase.from("employees").select("phone, date_of_birth, address").eq("id", user.employeeRowId).single();
+  return must(result, "profile details") as ProfileDetails;
+}
+
+/** Attendance for one calendar month ("YYYY-MM"). */
+export async function listMyAttendanceMonth(user: CurrentUser, month: string) {
+  const supabase = await createClient();
+  const [y, m] = month.split("-").map(Number);
+  const last = new Date(Date.UTC(y!, m!, 0)).getUTCDate();
+  const result = await supabase
+    .from("attendance")
+    .select("work_date, status")
+    .eq("employee_id", user.employeeRowId)
+    .gte("work_date", `${month}-01`)
+    .lte("work_date", `${month}-${String(last).padStart(2, "0")}`);
+  return must(result, "attendance month") as { work_date: string; status: AttendanceStatus }[];
+}
+
+/** `isNew`: published in the last 3 days (Figma "New" badge). */
+export type AnnouncementWithRead = AnnouncementRow & { read: boolean; isNew: boolean };
+
+const NEW_FOR_MS = 3 * 24 * 60 * 60 * 1000;
+
+export async function listMyAnnouncements(user: CurrentUser): Promise<AnnouncementWithRead[]> {
+  const supabase = await createClient();
+  const [announcements, reads] = await Promise.all([
+    supabase.from("announcements").select(ANNOUNCEMENT_COLUMNS).order("published_at", { ascending: false }).limit(50),
+    supabase.from("announcement_reads").select("announcement_id").eq("employee_id", user.employeeRowId),
+  ]);
+  const readIds = new Set((must(reads, "announcement reads") as { announcement_id: string }[]).map((r) => r.announcement_id));
+  const now = Date.now();
+  return (must(announcements, "announcements") as unknown as AnnouncementRow[]).map((a) => ({
+    ...a,
+    read: readIds.has(a.id),
+    isNew: now - Date.parse(a.published_at) < NEW_FOR_MS,
+  }));
 }
 
 /* ------------------------------ Manager ------------------------------- */

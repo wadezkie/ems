@@ -96,7 +96,7 @@ export async function updateDefaultCredentials(_prev: CredentialsState, formData
   }
 
   cookieStore.delete({ name: ACTIVATION_COOKIE, path: ACTIVATION_COOKIE_PATH });
-  redirect("/login?activated=1");
+  redirect("/activate/success");
 }
 
 /* -------------------------------- Login -------------------------------- */

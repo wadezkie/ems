@@ -9,6 +9,7 @@ export const metadata: Metadata = { title: "Login" };
 export default function LoginPage() {
   return (
     <AuthLayout
+      illustration="login"
       panelTitle="Welcome Back!"
       panelText={
         <>
@@ -23,6 +24,9 @@ export default function LoginPage() {
       <Suspense fallback={null}>
         <QueryNotice param="activated" value="1" tone="success">
           Your account is activated. Log in with your new username and password.
+        </QueryNotice>
+        <QueryNotice param="password" value="changed" tone="success">
+          Your password was changed. Log in with your new password.
         </QueryNotice>
       </Suspense>
       <LoginForm />

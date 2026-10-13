@@ -16,6 +16,7 @@ export const metadata: Metadata = { title: "Change Default Credentials" };
 export default function CredentialsPage() {
   return (
     <AuthLayout
+      illustration="change"
       panelTitle="Almost There!"
       panelText={
         <>

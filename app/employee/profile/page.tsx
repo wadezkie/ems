@@ -1,50 +1,71 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
-import { Avatar, PageBody, PageHeader, PageSkeleton } from "@/components/portal/ui";
+import { ProfileEditForm, StaticRow } from "@/components/employee/ProfileEditForm";
+import { cardClass, outlineButtonClass, PageTitle } from "@/components/employee/ui";
+import { Avatar, PageBody, PageSkeleton } from "@/components/portal/ui";
 import { requireRole } from "@/lib/auth/dal";
-import { fullName, todayIso } from "@/lib/format";
+import { getMyProfileDetails } from "@/lib/data/portal";
+import { formatDate, fullName } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Profile" };
+export const metadata: Metadata = { title: "My Profile" };
 
-export default function ProfilePage() {
+/** Figma PROFILE / EDIT PROFILE (`?edit=1`). */
+export default function ProfilePage({ searchParams }: PageProps<"/employee/profile">) {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      <Profile />
+      <Profile searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function Profile() {
+async function Profile({ searchParams }: { searchParams: PageProps<"/employee/profile">["searchParams"] }) {
   const user = await requireRole("employee");
+  const [details, params] = await Promise.all([getMyProfileDetails(user), searchParams]);
+  const editing = params.edit === "1";
   const name = fullName({ first_name: user.firstName, last_name: user.lastName, username: user.username });
-  const details: [string, string][] = [
-    ["Employee ID", user.employeeId],
-    ["Full Name", name],
-    ["Position", user.position ?? "—"],
-    ["Department", user.departmentName ?? "—"],
-    ["Company Email", user.email],
-    ["Username", user.username],
+
+  const before = [
+    { label: "Employee ID", value: user.employeeId },
+    { label: "Full Name", value: name },
+    { label: "Department", value: user.departmentName ?? "—" },
   ];
+  const email = { label: "Email", value: user.email };
+  const dob = { label: "Date of Birth", value: details.date_of_birth ? formatDate(details.date_of_birth) : "—" };
 
   return (
     <PageBody>
-      <PageHeader title="Profile" today={todayIso()} />
-      <section className="mt-11 rounded-[calc(var(--spacing)*3)] border-[1.5px] border-card-border px-6.5 py-8 lg:max-w-236.5">
-        <div className="flex items-center gap-6">
-          <Avatar name={name} src={user.avatarUrl} className="size-24 border border-card-border/40 text-f32" />
-          <div>
-            <p className="text-f28 font-semibold text-ink">{name}</p>
-            <p className="mt-1 text-f20 text-subtle">{user.position ?? "Employee"}</p>
-          </div>
-        </div>
-        <dl className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-          {details.map(([label, value]) => (
-            <div key={label}>
-              <dt className="text-f16 text-muted">{label}</dt>
-              <dd className="mt-1 text-f20 break-words text-ink">{value}</dd>
+      <PageTitle>My Profile</PageTitle>
+      <section className={`${cardClass} mt-12 flex flex-col gap-8 px-6 py-9 sm:flex-row sm:px-8 lg:max-w-234`}>
+        <Avatar name={name} src={user.avatarUrl} className="size-37 self-center border border-line text-f40 sm:self-start" />
+
+        {editing ? (
+          <ProfileEditForm
+            before={before}
+            after={[email, dob]}
+            values={{ position: user.position ?? "", phone: details.phone ?? "", address: details.address ?? "" }}
+          />
+        ) : (
+          <div className="flex flex-1 flex-col">
+            <dl className="rounded-[calc(var(--spacing)*3)] border-[1.5px] border-line px-3 py-2">
+              {[
+                ...before,
+                { label: "Position", value: user.position ?? "—" },
+                email,
+                { label: "Phone", value: details.phone ?? "—" },
+                dob,
+                { label: "Address", value: details.address ?? "—" },
+              ].map((row, i, all) => (
+                <StaticRow key={row.label} {...row} last={i === all.length - 1} />
+              ))}
+            </dl>
+            <div className="mt-6 flex justify-end">
+              <Link href="/employee/profile?edit=1" className={outlineButtonClass}>
+                Edit Profile
+              </Link>
             </div>
-          ))}
-        </dl>
+          </div>
+        )}
       </section>
     </PageBody>
   );

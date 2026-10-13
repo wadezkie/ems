@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
 
   /* EMS brand (sampled from the Figma login frame) */
   --color-brand: #023482; /* left panel */
@@ -27,6 +27,13 @@
   --color-amber-ink: #7a4f0e;
   --color-present: #16b316;
   --color-violet: #8b1fe6; /* on leave */
+
+  /* Employee module screens */
+  --color-line: #d4d4d4; /* light card borders */
+  --color-lavender: #b9b5f0; /* form control borders */
+  --color-check: #1fe34b; /* success check circle */
+  --color-megaphone: #6d2ee8; /* announcement icon */
+  --color-unread: #1735e0; /* unread dot */
 }
 
 /*

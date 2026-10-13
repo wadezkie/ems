@@ -125,6 +125,8 @@ export const STATUS_TONE: Record<string, BadgeTone> = {
   rejected: "red",
   cancelled: "gray",
   in_progress: "blue",
+  for_review: "green",
+  needs_revision: "red",
   completed: "green",
   present: "green",
   late: "amber",

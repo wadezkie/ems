@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ChangePasswordForm } from "@/components/portal/forms";
-import { PageBody, PageHeader, PageSkeleton } from "@/components/portal/ui";
+import { ChangePasswordForm } from "@/components/employee/ChangePasswordForm";
+import { PageTitle } from "@/components/employee/ui";
+import { PageBody, PageSkeleton } from "@/components/portal/ui";
 import { requireRole } from "@/lib/auth/dal";
-import { todayIso } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Change Password" };
 
+/** Figma CHANGE PASSWORD. */
 export default function ChangePasswordPage() {
   return (
     <Suspense fallback={<PageSkeleton />}>
@@ -19,7 +20,7 @@ async function Content() {
   await requireRole("employee");
   return (
     <PageBody>
-      <PageHeader title="Change Password" today={todayIso()} />
+      <PageTitle className="lg:mt-6">Change Password</PageTitle>
       <ChangePasswordForm />
     </PageBody>
   );

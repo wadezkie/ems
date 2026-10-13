@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ComponentType, type ReactNode, type SVGProps } from "react";
+import { Suspense, useEffect, useState, type ComponentType, type ReactNode, type SVGProps } from "react";
 import type { AppRole } from "@/lib/auth/dal";
 import {
   AttendanceIcon,
@@ -43,8 +43,23 @@ const NAV: Record<AppRole, NavItem[]> = {
   ],
 };
 
+/**
+ * Active state needs the URL, which only exists at request time, so the list
+ * first renders without a highlight and the active item streams in.
+ */
 export function SidebarNav({ role }: { role: AppRole }) {
-  const pathname = usePathname();
+  return (
+    <Suspense fallback={<NavList role={role} pathname={null} />}>
+      <ActiveNav role={role} />
+    </Suspense>
+  );
+}
+
+function ActiveNav({ role }: { role: AppRole }) {
+  return <NavList role={role} pathname={usePathname()} />;
+}
+
+function NavList({ role, pathname }: { role: AppRole; pathname: string | null }) {
   const items = NAV[role];
   const home = items[0]!.href;
 
@@ -52,7 +67,7 @@ export function SidebarNav({ role }: { role: AppRole }) {
     <nav aria-label="Main" className="mt-9 px-7.5">
       <ul className="flex flex-col gap-3">
         {items.map(({ href, label, icon: Icon }) => {
-          const active = href === home ? pathname === home : pathname === href || pathname.startsWith(`${href}/`);
+          const active = pathname !== null && (href === home ? pathname === home : pathname === href || pathname.startsWith(`${href}/`));
           return (
             <li key={href}>
               <Link
@@ -76,15 +91,11 @@ export function SidebarNav({ role }: { role: AppRole }) {
  * drawer with a top bar below lg.
  */
 export function SidebarFrame({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  // The drawer belongs to the route it was opened on, so navigating closes it.
-  const [openOn, setOpenOn] = useState<string | null>(null);
-  const open = openOn === pathname;
-  const setOpen = (value: boolean) => setOpenOn(value ? pathname : null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpenOn(null);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
@@ -109,8 +120,12 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
         <div aria-hidden className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />
       )}
 
+      {/* Close the drawer when a nav link is followed. */}
       <aside
         id="portal-sidebar"
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest("a")) setOpen(false);
+        }}
         className={`fixed inset-y-0 left-0 z-50 flex w-[288px] flex-col overflow-y-auto bg-brand text-white transition-transform duration-200 lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:w-97 lg:shrink-0 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
