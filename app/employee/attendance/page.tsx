@@ -62,18 +62,18 @@ async function Attendance({ searchParams }: { searchParams: PageProps<"/employee
 
   const title = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "long", year: "numeric" }).format(first);
   const arrow =
-    "flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-[#eef1fd] focus-visible:outline-2 focus-visible:outline-primary";
+    "flex size-8 items-center justify-center rounded-full text-ink transition-colors hover:bg-[#eef1fd] focus-visible:outline-2 focus-visible:outline-primary";
 
   return (
     <PageBody>
       <PageTitle>My Attendance</PageTitle>
 
-      <div className="mt-11 lg:max-w-207">
-        <div className={`${cardClass} flex items-center justify-between px-7 py-3`}>
+      <div className="mt-5 max-w-2xl">
+        <div className={`${cardClass} flex items-center justify-between px-3 py-2 sm:px-4`}>
           <Link href={`/employee/attendance?month=${shiftMonth(month, -1)}`} scroll={false} aria-label="Previous month" className={arrow}>
             <Chevron className="rotate-180" />
           </Link>
-          <h2 className="text-f24 font-medium text-ink" aria-live="polite">
+          <h2 className="text-section font-medium text-ink" aria-live="polite">
             {title}
           </h2>
           {month < thisMonth ? (
@@ -87,22 +87,22 @@ async function Attendance({ searchParams }: { searchParams: PageProps<"/employee
           )}
         </div>
 
-        <section className={`${cardClass} mt-1 px-5 pt-4 pb-6`} aria-label={`Attendance for ${title}`}>
-          <div className="grid grid-cols-7 border-b border-line pb-3 text-center text-f14 font-medium text-ink">
+        <section className={`${cardClass} mt-2 px-3 pt-3 pb-4 sm:px-5`} aria-label={`Attendance for ${title}`}>
+          <div className="grid grid-cols-7 border-b border-line pb-2 text-center text-caption font-medium text-muted">
             {WEEKDAYS.map((d) => (
               <span key={d}>{d}</span>
             ))}
           </div>
 
-          <ol className="mt-4 grid grid-cols-7 gap-y-2.5 text-center">
+          <ol className="mt-2 grid grid-cols-7 gap-y-1 text-center">
             {cells.map((c) => {
               const status = c.inMonth ? byDate.get(c.iso) : undefined;
               const isToday = c.iso === today;
               const label = LEGEND.find((l) => l.key === status)?.label;
               return (
-                <li key={c.iso} className="flex h-16 flex-col items-center justify-start gap-1">
+                <li key={c.iso} className="flex h-11 flex-col items-center justify-start gap-0.5">
                   <span
-                    className={`flex size-8 items-center justify-center rounded-full text-f14 ${
+                    className={`flex size-7 items-center justify-center rounded-full text-caption ${
                       isToday ? "bg-primary font-semibold text-white" : c.inMonth ? "text-ink" : "text-muted/50"
                     }`}
                   >
@@ -110,27 +110,27 @@ async function Attendance({ searchParams }: { searchParams: PageProps<"/employee
                     <span aria-hidden>{c.day}</span>
                   </span>
                   {status && (
-                    <span className={`size-2 rounded-full ${DOT[status]}`} role="img" aria-label={label} title={label} />
+                    <span className={`size-1.5 rounded-full ${DOT[status]}`} role="img" aria-label={label} title={label} />
                   )}
                 </li>
               );
             })}
           </ol>
 
-          <div className="mt-4 flex flex-wrap justify-around gap-x-6 gap-y-2 border-t border-line pt-4">
+          <div className="mt-3 flex flex-wrap justify-around gap-x-5 gap-y-1.5 border-t border-line pt-3">
             {LEGEND.map((l) => (
-              <span key={l.key} className="inline-flex items-center gap-2 text-f14 text-ink">
+              <span key={l.key} className="inline-flex items-center gap-1.5 text-caption text-ink">
                 <span aria-hidden className={`size-2 rounded-full ${l.dot}`} />
                 {l.label}
               </span>
             ))}
           </div>
 
-          <dl className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6 sm:px-6">
+          <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {LEGEND.map((l) => (
-              <div key={l.key} className="flex h-20 flex-col items-center justify-center rounded-[calc(var(--spacing)*2)] border-[1.5px] border-line">
-                <dt className="sr-only">{l.label}</dt>
-                <dd className={`text-f40 leading-none font-light ${l.text}`}>{totals[l.key]}</dd>
+              <div key={l.key} className="flex h-16 flex-col items-center justify-center gap-1 rounded-lg border border-line">
+                <dt className="text-xs text-muted">{l.label}</dt>
+                <dd className={`text-2xl leading-none font-medium ${l.text}`}>{totals[l.key]}</dd>
               </div>
             ))}
           </dl>
@@ -142,7 +142,7 @@ async function Attendance({ searchParams }: { searchParams: PageProps<"/employee
 
 function Chevron({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={`size-6 ${className ?? ""}`} fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg viewBox="0 0 24 24" className={`size-5 ${className ?? ""}`} fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="m9 5 7 7-7 7" />
     </svg>
   );

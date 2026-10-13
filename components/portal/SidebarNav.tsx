@@ -64,8 +64,8 @@ function NavList({ role, pathname }: { role: AppRole; pathname: string | null })
   const home = items[0]!.href;
 
   return (
-    <nav aria-label="Main" className="mt-9 px-7.5">
-      <ul className="flex flex-col gap-3">
+    <nav aria-label="Main" className="mt-5 px-3">
+      <ul className="flex flex-col gap-1">
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname !== null && (href === home ? pathname === home : pathname === href || pathname.startsWith(`${href}/`));
           return (
@@ -87,7 +87,7 @@ function NavList({ role, pathname }: { role: AppRole; pathname: string | null })
 }
 
 /**
- * Sidebar container. Fixed column from lg up (Figma desktop); an off-canvas
+ * Sidebar container. Fixed `w-sidebar` column from lg up; an off-canvas
  * drawer with a top bar below lg.
  */
 export function SidebarFrame({ children }: { children: ReactNode }) {
@@ -102,7 +102,7 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="sticky top-0 z-30 flex h-14 items-center gap-3 bg-brand px-4 text-white lg:hidden">
+      <div className="sticky top-0 z-30 flex h-12 items-center gap-3 bg-brand px-3 sm:px-4 text-white lg:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -111,9 +111,9 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
           aria-controls="portal-sidebar"
           className="rounded-md p-1.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
         >
-          <MenuIcon className="size-6" />
+          <MenuIcon className="size-5.5" />
         </button>
-        <span className="text-xl leading-none">EMS</span>
+        <span className="text-lg leading-none font-light tracking-wide">EMS</span>
       </div>
 
       {open && (
@@ -126,7 +126,7 @@ export function SidebarFrame({ children }: { children: ReactNode }) {
         onClick={(e) => {
           if ((e.target as HTMLElement).closest("a")) setOpen(false);
         }}
-        className={`fixed inset-y-0 left-0 z-50 flex w-[288px] flex-col overflow-y-auto bg-brand text-white transition-transform duration-200 lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:w-97 lg:shrink-0 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-sidebar max-w-[85vw] flex-col overflow-y-auto bg-brand text-white transition-transform duration-200 lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:max-w-none lg:shrink-0 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

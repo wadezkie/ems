@@ -20,7 +20,7 @@ async function Content() {
   await requireRole("employee");
   return (
     <PageBody>
-      <PageTitle className="lg:mt-6">Change Password</PageTitle>
+      <PageTitle>Change Password</PageTitle>
       <ChangePasswordForm />
     </PageBody>
   );

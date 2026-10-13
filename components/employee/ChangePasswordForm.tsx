@@ -20,9 +20,9 @@ export function ChangePasswordForm() {
 
   return (
     <>
-      <form action={action} noValidate className="mt-9 flex max-w-169 flex-col">
+      <form action={action} noValidate className="mt-5 flex max-w-md flex-col">
         {state.message && (
-          <p role="alert" className="mb-5 rounded-lg border border-danger/40 bg-danger/5 px-4 py-3 text-f16 text-danger">
+          <p role="alert" className="mb-4 rounded-lg border border-danger/40 bg-danger/5 px-3 py-2 text-sm text-danger">
             {state.message}
           </p>
         )}
@@ -36,7 +36,7 @@ export function ChangePasswordForm() {
           error={errors.newPassword}
           value={next}
           onChange={setNext}
-          className="mt-5"
+          className="mt-4"
         />
         <PasswordField
           name="confirmPassword"
@@ -44,12 +44,12 @@ export function ChangePasswordForm() {
           placeholder="Confirm new password"
           autoComplete="new-password"
           error={errors.confirmPassword}
-          className="mt-5"
+          className="mt-4"
         />
 
-        <div className="mt-2" aria-live="polite">
-          <p className="text-f12 font-semibold text-ink">Password must:</p>
-          <ul className="mt-1 space-y-0.5 pl-4 text-f12">
+        <div className="mt-3" aria-live="polite">
+          <p className="text-xs font-medium text-ink">Password must:</p>
+          <ul className="mt-1 space-y-0.5 pl-4 text-xs">
             {PASSWORD_RULES.map((r) => {
               const ok = r.test(next);
               return (
@@ -65,7 +65,7 @@ export function ChangePasswordForm() {
         <button
           type="submit"
           disabled={pending}
-          className="mx-auto mt-9 flex h-14 w-full max-w-146 items-center justify-center rounded-[calc(var(--spacing)*3.5)] bg-primary text-f28 font-medium text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-70"
+          className="mt-6 flex h-10 w-full items-center justify-center rounded-lg bg-primary text-sm font-medium text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-70"
         >
           {pending ? "Changing…" : "Change Password"}
         </button>
@@ -134,10 +134,10 @@ function PasswordField({
   const [visible, setVisible] = useState(false);
   return (
     <div className={className}>
-      <label htmlFor={id} className="text-f20 text-ink">
+      <label htmlFor={id} className="text-caption font-medium text-ink">
         {label}
       </label>
-      <div className="relative mt-2.5">
+      <div className="relative mt-1.5">
         <input
           id={id}
           name={name}
@@ -147,7 +147,7 @@ function PasswordField({
           {...(onChange ? { value, onChange: (e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value) } : {})}
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`h-15 w-full rounded-[calc(var(--spacing)*1)] border-[1.5px] bg-[#f8f8f8] pr-16 pl-6 text-f18 text-body outline-none transition-[border-color,box-shadow] placeholder:text-[#9a9a9a] focus:ring-3 ${
+          className={`h-10 w-full rounded-lg border bg-[#f8f8f8] pr-11 pl-3 text-sm text-body outline-none transition-[border-color,box-shadow] placeholder:text-[#9a9a9a] focus:ring-3 ${
             error ? "border-[#ff2b2b] focus:ring-danger/15" : "border-line focus:border-primary focus:ring-primary/15"
           }`}
         />
@@ -156,13 +156,13 @@ function PasswordField({
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? "Hide password" : "Show password"}
           aria-pressed={visible}
-          className="absolute top-1/2 right-4 flex -translate-y-1/2 rounded-sm p-1 text-[#5a5a5a] hover:text-black focus-visible:outline-2 focus-visible:outline-primary [&_svg]:size-7"
+          className="absolute top-1/2 right-2.5 flex -translate-y-1/2 rounded-sm p-1 text-[#5a5a5a] hover:text-black focus-visible:outline-2 focus-visible:outline-primary [&_svg]:size-4.5"
         >
           {visible ? <EyeOffIcon /> : <EyeIcon />}
         </button>
       </div>
       {error && (
-        <p id={`${id}-error`} role="alert" className="mt-1 text-right text-f12 text-[#ff2b2b]">
+        <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-[#ff2b2b]">
           {error}
         </p>
       )}

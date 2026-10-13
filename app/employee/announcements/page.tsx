@@ -35,7 +35,7 @@ async function Announcements({ searchParams }: { searchParams: PageProps<"/emplo
         ]}
       />
 
-      <div className="mt-6 flex flex-col gap-4 lg:max-w-234">
+      <div className="mt-4 flex max-w-4xl flex-col gap-3">
         {shown.map((a) => (
           <AnnouncementCard
             key={a.id}
@@ -50,7 +50,7 @@ async function Announcements({ searchParams }: { searchParams: PageProps<"/emplo
         {shown.length === 0 && <EmptyState>{tab === "unread" ? "You're all caught up." : "No announcements yet."}</EmptyState>}
       </div>
 
-      <p className="mt-6 text-f14 text-ink">
+      <p className="mt-3 text-caption text-muted">
         Showing {shown.length} of {all.length} {all.length === 1 ? "announcement" : "announcements"}
       </p>
     </PageBody>

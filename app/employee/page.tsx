@@ -48,20 +48,22 @@ async function EmployeeDashboard() {
           icon={<AttendanceIcon className="text-present" />}
           value={
             data.attendanceToday ? (
-              <span className="flex items-center gap-2.5 pt-2 text-f22 font-medium text-heading">
-                <CheckCircleIcon className={`size-7 shrink-0 ${ATTENDANCE_COLOR[data.attendanceToday]}`} />
+              <span className="flex items-center gap-2 py-1 text-card font-medium text-heading">
+                <CheckCircleIcon className={`size-5 shrink-0 ${ATTENDANCE_COLOR[data.attendanceToday]}`} />
                 {titleCase(data.attendanceToday)}
               </span>
             ) : (
-              <span className="block pt-2 text-f22 font-medium text-muted">Not recorded</span>
+              <span className="block py-1 text-card font-medium text-muted">Not recorded</span>
             )
           }
           caption="Today"
         />
       </StatGrid>
 
-      <UpcomingLeavePanel leave={data.upcomingLeave} />
-      <RecentAnnouncementPanel announcement={data.latestAnnouncement} />
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
+        <UpcomingLeavePanel leave={data.upcomingLeave} />
+        <RecentAnnouncementPanel announcement={data.latestAnnouncement} />
+      </div>
     </PageBody>
   );
 }

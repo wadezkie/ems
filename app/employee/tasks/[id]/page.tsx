@@ -30,26 +30,26 @@ async function Task({ params }: { params: PageProps<"/employee/tasks/[id]">["par
 
   return (
     <PageBody>
-      <Link href="/employee/tasks" className="text-f14 font-medium text-heading hover:underline">
+      <Link href="/employee/tasks" className="text-caption font-medium text-heading hover:underline">
         ← My Assigned Task
       </Link>
-      <PageTitle className="mt-3">Update Task Progress</PageTitle>
+      <PageTitle className="mt-1.5">Update Task Progress</PageTitle>
 
-      <div className="lg:max-w-234">
-        <section className={`${cardClass} mt-9 grid gap-6 px-6 py-7 sm:grid-cols-2`}>
+      <div className="max-w-4xl">
+        <section className={`${cardClass} mt-5 grid gap-4 p-4 sm:grid-cols-2 sm:p-5`}>
           <div>
-            <h2 className="text-f22 text-ink">Task</h2>
-            <p className="mt-2 text-f18 text-ink">{task.title}</p>
-            {task.description && <p className="mt-2 text-f14 text-muted">{task.description}</p>}
+            <h2 className="text-caption font-medium text-muted">Task</h2>
+            <p className="mt-1 text-card font-medium text-ink">{task.title}</p>
+            {task.description && <p className="mt-1 text-sm text-muted">{task.description}</p>}
           </div>
           <div>
-            <h2 className="text-f22 font-medium text-ink">Due Date</h2>
-            <p className="mt-2 text-f18 text-muted">{task.due_date ? formatDate(task.due_date) : "No due date"}</p>
+            <h2 className="text-caption font-medium text-muted">Due Date</h2>
+            <p className="mt-1 text-card text-ink">{task.due_date ? formatDate(task.due_date) : "No due date"}</p>
             {showBadge && (
-              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
                 <TaskStatusBadge status={task.status} long />
                 {task.status === "needs_revision" && task.manager_feedback && (
-                  <Link href={`/employee/tasks/${task.id}/feedback`} className="text-f14 font-medium text-primary hover:underline">
+                  <Link href={`/employee/tasks/${task.id}/feedback`} className="text-caption font-medium text-primary hover:underline">
                     View Feedback
                   </Link>
                 )}

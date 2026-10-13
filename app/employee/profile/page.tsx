@@ -36,8 +36,8 @@ async function Profile({ searchParams }: { searchParams: PageProps<"/employee/pr
   return (
     <PageBody>
       <PageTitle>My Profile</PageTitle>
-      <section className={`${cardClass} mt-12 flex flex-col gap-8 px-6 py-9 sm:flex-row sm:px-8 lg:max-w-234`}>
-        <Avatar name={name} src={user.avatarUrl} className="size-37 self-center border border-line text-f40 sm:self-start" />
+      <section className={`${cardClass} mt-5 flex max-w-4xl flex-col gap-5 p-4 sm:flex-row sm:gap-6 sm:p-6`}>
+        <Avatar name={name} src={user.avatarUrl} className="size-24 self-center border border-line text-3xl sm:self-start" />
 
         {editing ? (
           <ProfileEditForm
@@ -47,7 +47,7 @@ async function Profile({ searchParams }: { searchParams: PageProps<"/employee/pr
           />
         ) : (
           <div className="flex flex-1 flex-col">
-            <dl className="rounded-[calc(var(--spacing)*3)] border-[1.5px] border-line px-3 py-2">
+            <dl className="rounded-lg border border-line px-2 py-1">
               {[
                 ...before,
                 { label: "Position", value: user.position ?? "—" },
@@ -59,7 +59,7 @@ async function Profile({ searchParams }: { searchParams: PageProps<"/employee/pr
                 <StaticRow key={row.label} {...row} last={i === all.length - 1} />
               ))}
             </dl>
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 flex justify-end">
               <Link href="/employee/profile?edit=1" className={outlineButtonClass}>
                 Edit Profile
               </Link>

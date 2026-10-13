@@ -27,23 +27,23 @@ async function Feedback({ params }: { params: PageProps<"/employee/tasks/[id]/fe
   return (
     <PageBody>
       <PageTitle>Update Task Progress</PageTitle>
-      <p className="mt-4 text-f16 font-medium text-heading">
+      <p className="mt-1.5 text-caption font-medium text-heading">
         <Link href={`/employee/tasks/${task.id}`} className="hover:underline">
           Task
         </Link>{" "}
         / Feedback
       </p>
 
-      <div className="lg:max-w-234">
-        <section className={`${cardClass} mt-8 px-8 py-12 text-center`} aria-label={`Feedback for ${task.title}`}>
-          <p className="text-f14 font-medium text-muted">{task.title}</p>
-          <p className="mx-auto mt-4 max-w-160 text-f20 leading-relaxed whitespace-pre-line text-body">
+      <div className="max-w-4xl">
+        <section className={`${cardClass} mt-5 px-5 py-8 text-center sm:px-8`} aria-label={`Feedback for ${task.title}`}>
+          <p className="text-caption font-medium text-muted">{task.title}</p>
+          <p className="mx-auto mt-3 max-w-2xl text-card leading-relaxed whitespace-pre-line text-body">
             {task.manager_feedback ?? "Your manager has not left feedback for this task."}
           </p>
         </section>
         <Link
           href={`/employee/tasks/${task.id}`}
-          className="mx-auto mt-5 flex h-12 w-full max-w-54 items-center justify-center rounded-[calc(var(--spacing)*3)] bg-primary text-f24 font-medium text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="mx-auto mt-4 flex h-10 w-full max-w-40 items-center justify-center rounded-lg bg-primary text-sm font-medium text-white transition-colors hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           Ok
         </Link>

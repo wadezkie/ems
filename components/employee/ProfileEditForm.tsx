@@ -10,7 +10,7 @@ type Row = { label: string; value: string };
 const initial: ProfileState = { status: "idle", errors: {} };
 
 const inputClass =
-  "w-full rounded-[calc(var(--spacing)*1)] border border-transparent bg-[#ececec] px-2.5 py-1.5 text-f18 font-medium text-heading outline-none focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15 aria-invalid:border-danger";
+  "w-full rounded-md border border-transparent bg-[#f0f0f3] px-2.5 py-1.5 text-sm text-heading outline-none focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/15 aria-invalid:border-danger";
 
 /**
  * Figma EDIT PROFILE: same table, editable rows on a gray field with a red
@@ -33,11 +33,11 @@ export function ProfileEditForm({
   return (
     <form action={action} noValidate className="flex flex-1 flex-col">
       {state.message && (
-        <p role="alert" className="mb-4 rounded-lg border border-danger/40 bg-danger/5 px-4 py-2 text-f16 text-danger">
+        <p role="alert" className="mb-3 rounded-lg border border-danger/40 bg-danger/5 px-3 py-2 text-sm text-danger">
           {state.message}
         </p>
       )}
-      <dl className="rounded-[calc(var(--spacing)*3)] border-[1.5px] border-line px-3 py-2">
+      <dl className="rounded-lg border border-line px-2 py-1">
         {before.map((r) => (
           <StaticRow key={r.label} {...r} />
         ))}
@@ -64,7 +64,7 @@ export function ProfileEditForm({
         </EditRow>
       </dl>
 
-      <div className="mt-6 flex justify-end gap-3">
+      <div className="mt-4 flex justify-end gap-2">
         <button type="button" onClick={() => router.push("/employee/profile")} className={`${outlineButtonClass} border-line text-muted`}>
           Cancel
         </button>
@@ -103,9 +103,9 @@ export function ProfileEditForm({
 
 export function StaticRow({ label, value, last = false }: Row & { last?: boolean }) {
   return (
-    <div className={`grid grid-cols-1 gap-x-6 gap-y-0.5 px-2 py-2.5 sm:grid-cols-[minmax(0,38%)_1fr] ${last ? "" : "border-b border-line"}`}>
-      <dt className="text-f18 font-medium text-heading">{label}:</dt>
-      <dd className="text-f18 font-medium break-words text-heading sm:pl-3">{value}</dd>
+    <div className={`grid grid-cols-1 gap-x-4 gap-y-0.5 px-2 py-2 sm:grid-cols-[minmax(0,32%)_1fr] ${last ? "" : "border-b border-line"}`}>
+      <dt className="text-sm text-muted">{label}</dt>
+      <dd className="text-sm font-medium break-words text-heading">{value}</dd>
     </div>
   );
 }
@@ -123,20 +123,20 @@ function EditRow({
 }) {
   const id = `profile-${label.toLowerCase()}`;
   return (
-    <div className={`grid grid-cols-1 gap-x-6 gap-y-1 px-2 py-2 sm:grid-cols-[minmax(0,38%)_1fr] sm:items-center ${last ? "" : "border-b border-line"}`}>
+    <div className={`grid grid-cols-1 gap-x-4 gap-y-1 px-2 py-1.5 sm:grid-cols-[minmax(0,32%)_1fr] sm:items-center ${last ? "" : "border-b border-line"}`}>
       <dt>
-        <label htmlFor={id} className="text-f18 font-medium text-heading">
-          {label}:
+        <label htmlFor={id} className="text-sm text-muted">
+          {label}
         </label>
       </dt>
       <dd className="flex items-start gap-1.5">
-        <span aria-hidden className="pt-1 text-f18 text-danger">
+        <span aria-hidden className="pt-1.5 text-sm text-danger">
           *
         </span>
         <div className="min-w-0 flex-1">
           {children(id, Boolean(error))}
           {error && (
-            <p role="alert" className="mt-1 text-f14 text-danger">
+            <p role="alert" className="mt-1 text-caption text-danger">
               {error}
             </p>
           )}

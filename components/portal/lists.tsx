@@ -22,15 +22,15 @@ export function TaskTable({ tasks, showAssignee = false }: { tasks: TaskRow[]; s
         <tr key={t.id}>
           <td>
             <p className="font-medium text-ink">{t.title}</p>
-            {t.description && <p className="mt-1 text-f14 text-muted">{t.description}</p>}
+            {t.description && <p className="mt-0.5 line-clamp-2 text-caption text-muted">{t.description}</p>}
           </td>
           {showAssignee && <td className="whitespace-nowrap">{t.assignee ? fullName(t.assignee) : "—"}</td>}
           <td>{titleCase(t.priority)}</td>
           <td className="whitespace-nowrap">{t.due_date ? formatDate(t.due_date) : "—"}</td>
           <td>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <div
-                className="h-2 w-24 overflow-hidden rounded-full bg-[#e5e9f5]"
+                className="h-1.5 w-20 overflow-hidden rounded-full bg-[#e5e9f5]"
                 role="progressbar"
                 aria-valuenow={t.progress}
                 aria-valuemin={0}
@@ -39,7 +39,7 @@ export function TaskTable({ tasks, showAssignee = false }: { tasks: TaskRow[]; s
               >
                 <div className="h-full rounded-full bg-primary" style={{ width: `${t.progress}%` }} />
               </div>
-              <span className="text-f14">{t.progress}%</span>
+              <span className="text-caption tabular-nums">{t.progress}%</span>
             </div>
           </td>
           <td>
@@ -80,9 +80,9 @@ export function LeaveTable({ rows, showEmployee = false }: { rows: LeaveRow[]; s
           <td className="whitespace-nowrap">{titleCase(r.leave_type)} Leave</td>
           <td className="whitespace-nowrap">{formatDateRange(r.start_date, r.end_date)}</td>
           <td>{dayCount(r.start_date, r.end_date)}</td>
-          <td className="max-w-80">
+          <td className="max-w-72">
             {r.reason}
-            {r.review_note && <p className="mt-1 text-f14 text-muted">Note: {r.review_note}</p>}
+            {r.review_note && <p className="mt-0.5 text-caption text-muted">Note: {r.review_note}</p>}
           </td>
           <td className="whitespace-nowrap">{formatTimestampDate(r.created_at)}</td>
           <td>
@@ -97,12 +97,12 @@ export function LeaveTable({ rows, showEmployee = false }: { rows: LeaveRow[]; s
 export function AnnouncementList({ rows }: { rows: AnnouncementRow[] }) {
   if (rows.length === 0) return <EmptyState>No announcements yet.</EmptyState>;
   return (
-    <ul className="mt-8 flex flex-col gap-6 lg:max-w-236.5">
+    <ul className="mt-5 flex max-w-4xl flex-col gap-3">
       {rows.map((a) => (
-        <li key={a.id} className="rounded-[calc(var(--spacing)*3)] border-[1.5px] border-card-border px-6.5 py-6">
-          <h2 className="text-f22 font-medium text-heading">{a.title}</h2>
-          <p className="mt-3 text-f18 whitespace-pre-line text-body">{a.body}</p>
-          <p className="mt-4 text-f14 text-subtle">
+        <li key={a.id} className="rounded-xl border border-line px-4 py-3.5 sm:px-5">
+          <h2 className="text-card font-medium text-heading">{a.title}</h2>
+          <p className="mt-1.5 text-sm whitespace-pre-line text-body">{a.body}</p>
+          <p className="mt-2 text-caption text-subtle">
             <time dateTime={a.published_at}>{formatTimestampDate(a.published_at)}</time>
             {a.author && <> · {fullName(a.author)}</>}
           </p>

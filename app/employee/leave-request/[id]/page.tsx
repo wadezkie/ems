@@ -70,20 +70,20 @@ async function Detail({ params }: { params: PageProps<"/employee/leave-request/[
   return (
     <PageBody>
       <PageTitle>Leave Request</PageTitle>
-      <div className="lg:max-w-234">
-        <section role="status" className={`mt-8 flex items-center gap-6 rounded-[calc(var(--spacing)*3)] border-[1.5px] px-6 py-6 sm:px-8 ${banner.box}`}>
+      <div className="max-w-4xl">
+        <section role="status" className={`mt-5 flex items-center gap-4 rounded-xl border px-4 py-3.5 sm:px-5 ${banner.box}`}>
           <StatusIcon status={leave.status} />
-          <div className="text-f18 text-black">
-            <p className={`font-medium ${banner.titleClass}`}>{banner.title}</p>
-            <p className="mt-2">{banner.body}</p>
-            <p className={`mt-2 font-medium ${banner.statusClass}`}>Status: {banner.status}</p>
+          <div className="text-sm text-black">
+            <p className={`text-card font-semibold ${banner.titleClass}`}>{banner.title}</p>
+            <p className="mt-0.5">{banner.body}</p>
+            <p className={`mt-0.5 font-medium ${banner.statusClass}`}>Status: {banner.status}</p>
           </div>
         </section>
 
-        <div className={`mt-4 grid gap-4 ${reviewer ? "md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]" : ""}`}>
-          <section className={`${cardClass} px-6 py-6`}>
-            <h2 className="text-f18 font-semibold text-ink">Request Details</h2>
-            <dl className="mt-5 space-y-4 text-f14">
+        <div className={`mt-3 grid gap-3 ${reviewer ? "md:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]" : ""}`}>
+          <section className={`${cardClass} p-4 sm:p-5`}>
+            <h2 className="text-section font-medium text-ink">Request Details</h2>
+            <dl className="mt-3 space-y-2.5 text-sm">
               <Row label="Leave Type">{titleCase(leave.leave_type)} Leave</Row>
               <Row label="Start Date">{formatShortDate(leave.start_date)}</Row>
               <Row label="End Date">{formatShortDate(leave.end_date)}</Row>
@@ -104,23 +104,23 @@ async function Detail({ params }: { params: PageProps<"/employee/leave-request/[
           </section>
 
           {reviewer && (
-            <section className={`${cardClass} px-5 py-5`}>
-              <h2 className="text-f18 font-medium text-ink">{approved ? "Approved By" : "Reviewed By"}</h2>
-              <div className="mt-4 flex items-center gap-4">
-                <Avatar name={fullName(reviewer)} src={reviewer.avatar_url} className="size-16 border border-line text-f20" />
+            <section className={`${cardClass} p-4 sm:p-5`}>
+              <h2 className="text-section font-medium text-ink">{approved ? "Approved By" : "Reviewed By"}</h2>
+              <div className="mt-3 flex items-center gap-3">
+                <Avatar name={fullName(reviewer)} src={reviewer.avatar_url} className="size-10 border border-line text-sm" />
                 <div className="min-w-0">
-                  <p className="text-f18 font-medium break-words text-ink">{fullName(reviewer)}</p>
-                  <p className="text-f12 text-muted">{reviewer.role === "department_manager" ? "Department Manager" : (reviewer.position ?? "")}</p>
+                  <p className="text-sm font-medium break-words text-ink">{fullName(reviewer)}</p>
+                  <p className="text-xs text-muted">{reviewer.role === "department_manager" ? "Department Manager" : (reviewer.position ?? "")}</p>
                 </div>
               </div>
               {leave.reviewed_at && (
                 <>
-                  <p className="mt-5 text-f12 font-medium text-ink">{approved ? "Approved On" : "Reviewed On"}</p>
-                  <p className="mt-1 text-f12 text-ink">{formatDateTime(leave.reviewed_at)}</p>
+                  <p className="mt-4 text-xs font-medium text-muted">{approved ? "Approved On" : "Reviewed On"}</p>
+                  <p className="mt-0.5 text-sm text-ink">{formatDateTime(leave.reviewed_at)}</p>
                 </>
               )}
-              <p className="mt-5 text-f12 font-medium text-ink">{approved ? "Remarks (Optional)" : "Manager Feedback"}</p>
-              <p className="mt-1.5 min-h-20 rounded-[calc(var(--spacing)*2.5)] border-[1.5px] border-line px-3 py-2.5 text-f14 whitespace-pre-line text-ink">
+              <p className="mt-4 text-xs font-medium text-muted">{approved ? "Remarks (Optional)" : "Manager Feedback"}</p>
+              <p className="mt-1 min-h-16 rounded-lg border border-line px-3 py-2 text-sm whitespace-pre-line text-ink">
                 {leave.review_note || "—"}
               </p>
             </section>
@@ -129,7 +129,7 @@ async function Detail({ params }: { params: PageProps<"/employee/leave-request/[
 
         <FooterNote status={leave.status} note={leave.review_note} />
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-5 flex justify-end">
           <Link href="/employee/leave-status" className={outlineButtonClass}>
             View Leave Status
           </Link>
@@ -141,7 +141,7 @@ async function Detail({ params }: { params: PageProps<"/employee/leave-request/[
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[minmax(0,32%)_1fr] gap-4">
+    <div className="grid grid-cols-[minmax(0,32%)_1fr] gap-3">
       <dt className="text-muted">{label}</dt>
       <dd className="font-medium break-words text-black">{children}</dd>
     </div>
@@ -175,14 +175,14 @@ function FooterNote({ status, note }: { status: Status; note: string | null }) {
   if (status === "cancelled") return null;
   const n = notes[status];
   return (
-    <div className={`mt-4 rounded-[calc(var(--spacing)*3)] border-[1.5px] px-6 py-4 ${n.box}`}>
-      <p className={`flex items-center gap-3 text-f18 font-medium ${n.titleClass}`}>
-        <span aria-hidden className={`flex size-5 shrink-0 items-center justify-center rounded-full text-f12 font-bold text-white ${n.dot}`}>
+    <div className={`mt-3 rounded-xl border px-4 py-3 sm:px-5 ${n.box}`}>
+      <p className={`flex items-center gap-2.5 text-sm font-medium ${n.titleClass}`}>
+        <span aria-hidden className={`flex size-4.5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white ${n.dot}`}>
           !
         </span>
         {n.title}
       </p>
-      <p className="mt-2 pl-8 text-f18 font-medium text-black">{n.body}</p>
+      <p className="mt-1 pl-7 text-sm text-black">{n.body}</p>
     </div>
   );
 }
@@ -190,7 +190,7 @@ function FooterNote({ status, note }: { status: Status; note: string | null }) {
 function StatusIcon({ status }: { status: Status }) {
   if (status === "pending") {
     return (
-      <svg viewBox="0 0 48 48" className="size-14 shrink-0 text-[#ff7a1a]" fill="none" stroke="currentColor" strokeWidth={3.5} strokeLinecap="round" aria-hidden>
+      <svg viewBox="0 0 48 48" className="size-10 shrink-0 text-[#ff7a1a]" fill="none" stroke="currentColor" strokeWidth={3.5} strokeLinecap="round" aria-hidden>
         <circle cx="24" cy="24" r="19" />
         <path d="M24 13v12l7 5" />
       </svg>
@@ -200,11 +200,11 @@ function StatusIcon({ status }: { status: Status }) {
   return (
     <span
       aria-hidden
-      className={`flex size-18 shrink-0 items-center justify-center rounded-full ${
+      className={`flex size-10 shrink-0 items-center justify-center rounded-full ${
         approved ? "bg-check text-ink" : status === "rejected" ? "bg-[#ff1414] text-white" : "bg-[#cfcfcf] text-white"
       }`}
     >
-      <svg viewBox="0 0 24 24" className="size-8" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
         {approved ? <path d="m5 12.5 4.5 4.5L19 7.5" /> : <path d="M7 7l10 10M17 7 7 17" />}
       </svg>
     </span>

@@ -23,7 +23,7 @@ export function TaskStatusFilter({ value }: { value: string }) {
           startTransition(() => router.replace(next.size ? `${pathname}?${next}` : pathname, { scroll: false }));
         }}
         aria-busy={pending || undefined}
-        className="h-11 appearance-none rounded-[calc(var(--spacing)*2)] border-[1.5px] border-lavender bg-white pr-10 pl-3.5 text-f18 font-medium text-ink outline-none focus:border-primary focus:ring-3 focus:ring-primary/15"
+        className="h-9 appearance-none rounded-lg border border-lavender bg-white pr-9 pl-3 text-sm font-medium text-ink outline-none focus:border-primary focus:ring-3 focus:ring-primary/15"
       >
         {TASK_FILTERS.map((f) => (
           <option key={f.value} value={f.value}>
@@ -31,7 +31,7 @@ export function TaskStatusFilter({ value }: { value: string }) {
           </option>
         ))}
       </select>
-      <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-3 size-5 text-ink" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 size-4 text-ink" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="m6 9 6 6 6-6" />
       </svg>
     </label>

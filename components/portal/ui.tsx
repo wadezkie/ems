@@ -33,31 +33,31 @@ export function Avatar({ name, src, className }: { name: string; src: string | n
 /** Page heading with the Figma date block ("May 31, 2026 | Saturday") and bell. */
 export function PageHeader({ title, today }: { title: string; today: string }) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
-      <h1 className="text-f36 leading-tight font-semibold text-ink">{title}</h1>
-      <div className="flex items-center gap-6 text-f22 text-ink">
+    <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+      <h1 className="text-page font-semibold text-ink">{title}</h1>
+      <div className="flex items-center gap-4 text-sm text-ink">
         <p>
           <time dateTime={today}>{formatDate(today)}</time>
-          <span className="ml-2 border-l-2 border-ink/60 pl-2">{formatWeekday(today)}</span>
+          <span className="ml-2 border-l border-ink/40 pl-2 text-ink/75">{formatWeekday(today)}</span>
         </p>
-        <BellIcon className="size-9 shrink-0" aria-label="Notifications" role="img" />
+        <BellIcon className="size-5 shrink-0" aria-label="Notifications" role="img" />
       </div>
     </header>
   );
 }
 
-/** Content padding from the Figma frame (60px left, 54px right, 72px top). */
+/** Page content padding and max width, shared by every portal screen. */
 export function PageBody({ children }: { children: ReactNode }) {
-  return <div className="px-5 pt-8 pb-12 sm:px-8 lg:pt-18 lg:pr-13.5 lg:pl-15">{children}</div>;
+  return <div className="mx-auto w-full max-w-7xl px-4 pt-5 pb-10 sm:px-6 lg:px-7 lg:pt-6">{children}</div>;
 }
 
 /* ------------------------------- Cards ------------------------------ */
 
-const boxClass = "rounded-[calc(var(--spacing)*3)] border-[1.5px] border-card-border bg-white";
+const boxClass = "rounded-xl border border-line bg-white";
 
 export function StatGrid({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-11 grid grid-cols-2 gap-5 sm:gap-8 lg:max-w-237.5 lg:grid-cols-4 lg:gap-12.5">{children}</div>
+    <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">{children}</div>
   );
 }
 
@@ -76,21 +76,21 @@ export function StatCard({
   valueClass?: string;
 }) {
   return (
-    <section className={`${boxClass} flex min-h-49 flex-col px-5 pt-6 pb-5`}>
-      <h2 className="flex items-center gap-1 text-f20 leading-tight font-medium text-heading [&_svg]:size-6.5 [&_svg]:shrink-0">
+    <section className={`${boxClass} flex min-h-28 min-w-0 flex-col p-4`}>
+      <h2 className="flex items-center gap-1.5 text-sm leading-tight font-medium text-heading [&_svg]:size-4.5 [&_svg]:shrink-0">
         {icon}
         <span>{title}</span>
       </h2>
-      <div className={`mt-6 text-f64 leading-none ${valueClass}`}>{value}</div>
-      <p className="mt-auto pt-4 text-f12 font-semibold text-black">{caption}</p>
+      <div className={`mt-3 text-display font-medium ${valueClass}`}>{value}</div>
+      <p className="mt-auto pt-2 text-xs font-medium text-muted">{caption}</p>
     </section>
   );
 }
 
 export function Panel({ title, className, children }: { title: string; className?: string; children: ReactNode }) {
   return (
-    <section className={`${boxClass} px-6.5 pt-6 pb-6 ${className ?? ""}`}>
-      <h2 className="text-f22 font-medium text-heading">{title}</h2>
+    <section className={`${boxClass} p-4 sm:p-5 ${className ?? ""}`}>
+      <h2 className="text-section font-medium text-heading">{title}</h2>
       {children}
     </section>
   );
@@ -112,7 +112,7 @@ export type BadgeTone = keyof typeof BADGE_TONE;
 export function Badge({ tone, children }: { tone: BadgeTone; children: ReactNode }) {
   return (
     <span
-      className={`inline-flex items-center rounded-[calc(var(--spacing)*2)] px-4 py-1.5 text-f20 leading-tight whitespace-nowrap ${BADGE_TONE[tone]}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-5 font-medium whitespace-nowrap ${BADGE_TONE[tone]}`}
     >
       {children}
     </span>
@@ -142,7 +142,7 @@ export const STATUS_TONE: Record<string, BadgeTone> = {
 /* ------------------------------ Tables ------------------------------ */
 
 export function EmptyState({ children }: { children: ReactNode }) {
-  return <p className="mt-8 rounded-lg border border-dashed border-card-border/60 px-6 py-10 text-center text-f18 text-muted">{children}</p>;
+  return <p className="mt-5 rounded-lg border border-dashed border-card-border/50 px-4 py-8 text-center text-sm text-muted">{children}</p>;
 }
 
 /**
@@ -151,18 +151,18 @@ export function EmptyState({ children }: { children: ReactNode }) {
  */
 export function DataTable({ head, children }: { head: string[]; children: ReactNode }) {
   return (
-    <div className={`${boxClass} mt-8 overflow-x-auto`}>
-      <table className="w-full min-w-[640px] border-collapse text-left text-f18">
+    <div className={`${boxClass} mt-5 overflow-x-auto`}>
+      <table className="w-full min-w-[640px] border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b-[1.5px] border-card-border/50 text-heading">
+          <tr className="border-b border-line bg-[#f7f8fc] text-caption text-heading">
             {head.map((h) => (
-              <th key={h} scope="col" className="px-5 py-4 font-medium whitespace-nowrap">
+              <th key={h} scope="col" className="px-3.5 py-2.5 font-medium whitespace-nowrap">
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="text-body [&_td]:px-5 [&_td]:py-4 [&_tr+tr]:border-t [&_tr+tr]:border-card-border/25">
+        <tbody className="text-body [&_td]:px-3.5 [&_td]:py-2.5 [&_tr+tr]:border-t [&_tr+tr]:border-line/70">
           {children}
         </tbody>
       </table>
@@ -171,17 +171,17 @@ export function DataTable({ head, children }: { head: string[]; children: ReactN
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="mt-10 text-f24 font-medium text-heading">{children}</h2>;
+  return <h2 className="mt-6 text-section font-medium text-heading">{children}</h2>;
 }
 
 /** Shown while a page's request-time data streams in. */
 export function PageSkeleton() {
   return (
     <PageBody>
-      <div className="h-10 w-2/5 animate-pulse rounded bg-[#eceff6]" />
-      <div className="mt-11 grid grid-cols-2 gap-5 lg:max-w-237.5 lg:grid-cols-4 lg:gap-12.5">
+      <div className="h-8 w-2/5 animate-pulse rounded bg-[#eceff6]" />
+      <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-49 animate-pulse rounded-xl bg-[#f1f3f8]" />
+          <div key={i} className="h-28 animate-pulse rounded-xl bg-[#f1f3f8]" />
         ))}
       </div>
     </PageBody>

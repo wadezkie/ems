@@ -13,19 +13,18 @@ const ROLE_LABEL: Record<AppRole, string> = {
 };
 
 /**
- * Figma portal frame: 388px brand sidebar + white content area.
- * From lg up, `--spacing` maps one Tailwind unit to 1/4 Figma px at a
- * 1440px-wide frame (scaled with the viewport), so `w-97` = 388 Figma px and
- * `text-f*` sizes are Figma px. Smaller screens use a fixed scale.
+ * Portal frame: brand sidebar (`w-sidebar`, fixed from lg up, a drawer below)
+ * + white content area. Sizes are plain Tailwind units (4px) and the portal
+ * type scale from app/globals.css.
  */
 export function PortalShell({ role, children }: { role: AppRole; children: ReactNode }) {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col [--spacing:3px] sm:[--spacing:3.4px] lg:flex-row lg:[--spacing:clamp(2.6px,100vw/360,4.4px)]">
+    <div className="flex min-h-dvh flex-1 flex-col lg:flex-row">
       <SidebarFrame>
-        <div className="px-8 pt-9 text-center">
-          <p className="text-f64 leading-none font-light">EMS</p>
-          <p className="mt-2.5 text-f18">Employee Management System</p>
-          <hr className="mt-7 border-white/70" />
+        <div className="px-5 pt-6 text-center">
+          <p className="text-3xl leading-none font-light tracking-wide">EMS</p>
+          <p className="mt-1.5 text-xs text-white/85">Employee Management System</p>
+          <hr className="mt-5 border-white/30" />
         </div>
 
         <Suspense fallback={<ProfileSkeleton />}>
@@ -34,8 +33,8 @@ export function PortalShell({ role, children }: { role: AppRole; children: React
 
         <SidebarNav role={role} />
 
-        <div className="mt-auto px-7.5 pt-10 pb-9">
-          <hr className="mx-0.5 mb-6 border-white/70" />
+        <div className="mt-auto px-3 pt-6 pb-5">
+          <hr className="mx-2 mb-3 border-white/30" />
           <form action={signOut}>
             <button type="submit" className={`${navItemClass} hover:bg-white/10`}>
               <LogoutIcon />
@@ -56,11 +55,11 @@ async function SidebarProfile({ role }: { role: AppRole }) {
   const title = role === "department_manager" ? ROLE_LABEL[role] : user.position || ROLE_LABEL[role];
 
   return (
-    <div className="mt-8 flex items-center gap-5 px-10">
-      <Avatar name={name} src={user.avatarUrl} className="size-21 text-f28" />
+    <div className="mt-5 flex items-center gap-3 px-5">
+      <Avatar name={name} src={user.avatarUrl} className="size-10 text-sm" />
       <div className="min-w-0">
-        <p className="text-f22 leading-tight font-semibold break-words">{name}</p>
-        <p className="mt-1.5 text-f20 leading-tight break-words text-sidebar-muted">{title}</p>
+        <p className="text-sm leading-tight font-semibold break-words">{name}</p>
+        <p className="mt-0.5 text-xs leading-tight break-words text-sidebar-muted">{title}</p>
       </div>
     </div>
   );
@@ -68,11 +67,11 @@ async function SidebarProfile({ role }: { role: AppRole }) {
 
 function ProfileSkeleton() {
   return (
-    <div className="mt-8 flex items-center gap-6 px-10" aria-hidden>
-      <div className="size-21 shrink-0 animate-pulse rounded-full bg-white/20" />
-      <div className="flex-1 space-y-3">
-        <div className="h-5 w-3/4 animate-pulse rounded bg-white/20" />
-        <div className="h-4 w-1/2 animate-pulse rounded bg-white/15" />
+    <div className="mt-5 flex items-center gap-3 px-5" aria-hidden>
+      <div className="size-10 shrink-0 animate-pulse rounded-full bg-white/20" />
+      <div className="flex-1 space-y-2">
+        <div className="h-3.5 w-3/4 animate-pulse rounded bg-white/20" />
+        <div className="h-3 w-1/2 animate-pulse rounded bg-white/15" />
       </div>
     </div>
   );

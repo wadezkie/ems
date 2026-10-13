@@ -30,46 +30,50 @@ async function Tasks({ searchParams }: { searchParams: PageProps<"/employee/task
   return (
     <PageBody>
       <PageTitle>My Assigned Task</PageTitle>
-      <div className="mt-5 flex justify-end lg:max-w-234">
+      <div className="mt-4 flex max-w-5xl justify-end">
         <TaskStatusFilter value={filter} />
       </div>
 
-      <div className="mt-8 overflow-x-auto lg:max-w-234">
+      <div className="mt-3 max-w-5xl overflow-x-auto rounded-xl border border-line">
         <table className="w-full min-w-[620px] border-collapse text-left">
           <thead>
-            <tr className="border-y-2 border-[#a9a9a9] text-f18 font-medium text-ink">
-              <th scope="col" className="py-7 pr-4 font-medium">Task</th>
-              <th scope="col" className="py-7 pr-4 font-medium">Due Date</th>
-              <th scope="col" className="py-7 pr-4 text-center font-medium">Status</th>
-              <th scope="col" className="py-7 text-center font-medium">Priority</th>
+            <tr className="border-b border-line bg-[#f7f8fc] text-caption font-medium text-heading">
+              <th scope="col" className="px-4 py-2.5 font-medium">Task</th>
+              <th scope="col" className="px-4 py-2.5 font-medium">Due Date</th>
+              <th scope="col" className="px-4 py-2.5 text-center font-medium">Status</th>
+              <th scope="col" className="px-4 py-2.5 text-center font-medium">Priority</th>
             </tr>
           </thead>
           <tbody>
             {tasks.map((t) => (
-              <tr key={t.id} className="relative border-b-2 border-[#a9a9a9] transition-colors hover:bg-[#f6f8ff] focus-within:bg-[#f6f8ff]">
-                <td className="py-8 pr-4">
+              <tr key={t.id} className="relative border-t border-line/70 transition-colors hover:bg-[#f6f8ff] focus-within:bg-[#f6f8ff]">
+                <td className="px-4 py-2.5">
                   <Link
                     href={`/employee/tasks/${t.id}`}
-                    className="text-f18 font-medium text-ink after:absolute after:inset-0 focus-visible:outline-none"
+                    className="text-sm font-medium text-ink after:absolute after:inset-0 focus-visible:outline-none"
                   >
                     {t.title}
                   </Link>
                 </td>
-                <td className="py-8 pr-4 text-f18 font-medium whitespace-nowrap text-ink">{t.due_date ? formatShortDate(t.due_date) : "—"}</td>
-                <td className="py-8 pr-4 text-center">
+                <td className="px-4 py-2.5 text-sm whitespace-nowrap text-ink">{t.due_date ? formatShortDate(t.due_date) : "—"}</td>
+                <td className="px-4 py-2.5 text-center">
                   <TaskStatusBadge status={t.status} />
                 </td>
-                <td className="py-8 text-center">
+                <td className="px-4 py-2.5 text-center">
                   <PriorityLabel priority={t.priority} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {tasks.length === 0 && <EmptyState>{filter === "all" ? "No tasks assigned yet." : "No tasks with this status."}</EmptyState>}
       </div>
+      {tasks.length === 0 && (
+        <div className="max-w-5xl">
+          <EmptyState>{filter === "all" ? "No tasks assigned yet." : "No tasks with this status."}</EmptyState>
+        </div>
+      )}
 
-      <p className="mt-8 text-f14 text-ink">
+      <p className="mt-3 text-caption text-muted">
         Showing {tasks.length} of {all.length} {all.length === 1 ? "task" : "tasks"}
       </p>
     </PageBody>

@@ -70,15 +70,15 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
   const busy = uploading || pending;
 
   return (
-    <form onSubmit={submit} noValidate className="mt-6 lg:max-w-234">
+    <form onSubmit={submit} noValidate className="mt-5 max-w-4xl">
       {state.message && (
-        <p role="alert" className="mb-4 rounded-lg border border-danger/40 bg-danger/5 px-4 py-3 text-f16 text-danger">
+        <p role="alert" className="mb-3 rounded-lg border border-danger/40 bg-danger/5 px-3 py-2 text-sm text-danger">
           {state.message}
         </p>
       )}
 
-      <div className={`${cardClass} px-5 py-6 sm:px-6`}>
-        <div className="grid gap-x-6 gap-y-5 sm:grid-cols-3">
+      <div className={`${cardClass} p-4 sm:p-5`}>
+        <div className="grid gap-x-4 gap-y-4 sm:grid-cols-3">
           <Field label="Leave Type" required error={errors.leaveType}>
             {(id, describedBy) => (
               <div className="relative">
@@ -89,7 +89,7 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
                   onChange={set("leaveType")}
                   aria-invalid={Boolean(errors.leaveType) || undefined}
                   aria-describedby={describedBy}
-                  className={`${controlClass} h-12 appearance-none pr-10`}
+                  className={`${controlClass} h-10 appearance-none pr-9`}
                 >
                   <option value="" disabled>
                     Select leave type
@@ -99,7 +99,7 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
                   <option value="emergency">Emergency Leave</option>
                   <option value="other">Other</option>
                 </select>
-                <svg viewBox="0 0 24 24" className="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-ink" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <svg viewBox="0 0 24 24" className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="m6 9 6 6 6-6" />
                 </svg>
               </div>
@@ -116,7 +116,7 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
                 onChange={set("startDate")}
                 aria-invalid={Boolean(errors.startDate) || undefined}
                 aria-describedby={describedBy}
-                className={`${controlClass} h-12`}
+                className={`${controlClass} h-10`}
               />
             )}
           </Field>
@@ -131,18 +131,18 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
                 onChange={set("endDate")}
                 aria-invalid={Boolean(errors.endDate) || undefined}
                 aria-describedby={describedBy}
-                className={`${controlClass} h-12`}
+                className={`${controlClass} h-10`}
               />
             )}
           </Field>
         </div>
 
-        <div className="mt-6 w-full max-w-44 rounded-[calc(var(--spacing)*2.5)] border-[1.5px] border-lavender bg-[#e9e9e9] px-3.5 py-3" aria-live="polite">
-          <p className="text-f16 font-medium text-ink">Total Days</p>
-          <p className="mt-1.5 text-f14 text-ink">{days ? `${days} ${days === 1 ? "Day" : "Days"}` : "—"}</p>
+        <div className="mt-4 inline-flex items-baseline gap-2 rounded-lg border border-lavender bg-[#f0f0f3] px-3 py-2" aria-live="polite">
+          <p className="text-caption font-medium text-ink">Total Days:</p>
+          <p className="text-sm font-medium text-ink">{days ? `${days} ${days === 1 ? "Day" : "Days"}` : "—"}</p>
         </div>
 
-        <Field label="Reason" required error={errors.reason} className="mt-6">
+        <Field label="Reason" required error={errors.reason} className="mt-4">
           {(id, describedBy) => (
             <textarea
               id={id}
@@ -154,17 +154,17 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
               placeholder="Briefly explain the reason for your leave"
               aria-invalid={Boolean(errors.reason) || undefined}
               aria-describedby={describedBy}
-              className={`${controlClass} min-h-32 resize-y py-3`}
+              className={`${controlClass} min-h-24 resize-y py-2.5`}
             />
           )}
         </Field>
 
-        <fieldset className="mt-6 rounded-[calc(var(--spacing)*2.5)] border-[1.5px] border-lavender bg-[#ececec] px-4 py-4 sm:px-5">
+        <fieldset className="mt-4 rounded-lg border border-lavender bg-[#f4f4f6] p-3 sm:p-4">
           <legend className="sr-only">Attachment</legend>
-          <p className="text-f16 font-semibold text-ink">Attachment (Optional)</p>
-          <p className="mt-1 text-f14 text-ink">You can attach a medical certificate or any supporting document.</p>
+          <p className="text-sm font-medium text-ink">Attachment (Optional)</p>
+          <p className="mt-0.5 text-caption text-ink/80">You can attach a medical certificate or any supporting document.</p>
 
-          <div className="mt-4 flex min-h-14 flex-wrap items-center gap-3 rounded-[calc(var(--spacing)*2)] bg-white px-4 py-3">
+          <div className="mt-3 flex min-h-11 flex-wrap items-center gap-3 rounded-md bg-white px-3 py-2">
             <input
               ref={fileInput}
               id="leave-file"
@@ -177,38 +177,38 @@ export function LeaveRequestForm({ employeeRowId, today }: { employeeRowId: stri
             />
             <label
               htmlFor="leave-file"
-              className="cursor-pointer rounded-[calc(var(--spacing)*1.5)] bg-[#d7e2ff] px-4 py-1.5 text-f18 font-medium text-[#3550d4] transition-colors hover:bg-[#c7d5ff] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary"
+              className="cursor-pointer rounded-md bg-[#d7e2ff] px-3 py-1 text-sm font-medium text-[#3550d4] transition-colors hover:bg-[#c7d5ff] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary"
             >
               Choose File
             </label>
             {file ? (
-              <span className="inline-flex max-w-full items-center gap-2 rounded-[calc(var(--spacing)*1)] bg-[#e4e4e4] py-1 pr-1.5 pl-3 text-f14 text-ink">
+              <span className="inline-flex max-w-full items-center gap-2 rounded bg-[#e4e4e4] py-0.5 pr-1 pl-2.5 text-caption text-ink">
                 <span className="truncate">{file.name}</span>
                 <button
                   type="button"
                   onClick={() => pickFile(null)}
                   aria-label={`Remove ${file.name}`}
-                  className="rounded px-1 text-f16 leading-none hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-primary"
+                  className="rounded px-1 text-base leading-none hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-primary"
                 >
                   ×
                 </button>
               </span>
             ) : (
-              <span className="text-f14 text-muted">No file chosen</span>
+              <span className="text-caption text-muted">No file chosen</span>
             )}
           </div>
-          <p id={fileHintId} className="mt-3 text-f12 text-ink">
+          <p id={fileHintId} className="mt-2 text-xs text-muted">
             Max file size: 10 MB. Allowed formats: PDF, PNG, JPG.
           </p>
           {(fileError || errors.attachment) && (
-            <p role="alert" className="mt-1.5 text-f14 text-danger">
+            <p role="alert" className="mt-1 text-caption text-danger">
               {fileError ?? errors.attachment}
             </p>
           )}
         </fieldset>
       </div>
 
-      <button type="submit" disabled={busy} className={`${primaryButtonClass} mt-5`}>
+      <button type="submit" disabled={busy} className={`${primaryButtonClass} mt-4`}>
         Submit Request
       </button>
 
@@ -234,17 +234,17 @@ function Field({
   const errorId = `${id}-error`;
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2.5 block text-f18 font-medium text-ink">
+      <label htmlFor={id} className="mb-1.5 block text-caption font-medium text-ink">
         {label}
         {required && (
-          <span aria-hidden className="ml-1.5 text-danger">
+          <span aria-hidden className="ml-1 text-danger">
             *
           </span>
         )}
       </label>
       {children(id, error ? errorId : undefined)}
       {error && (
-        <p id={errorId} role="alert" className="mt-1.5 text-f14 text-danger">
+        <p id={errorId} role="alert" className="mt-1 text-caption text-danger">
           {error}
         </p>
       )}

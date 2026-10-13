@@ -34,6 +34,24 @@
   --color-check: #1fe34b; /* success check circle */
   --color-megaphone: #6d2ee8; /* announcement icon */
   --color-unread: #1735e0; /* unread dot */
+
+  /*
+   * Portal type scale (employee + manager screens). Body text uses text-sm
+   * (14px) and labels/secondary text use text-caption.
+   */
+  --text-display: 1.75rem; /* 28px dashboard statistics */
+  --text-display--line-height: 1.1;
+  --text-page: 1.5rem; /* 24px page headings */
+  --text-page--line-height: 1.25;
+  --text-section: 1.0625rem; /* 17px section and panel headings */
+  --text-section--line-height: 1.35;
+  --text-card: 0.9375rem; /* 15px card titles, emphasised rows */
+  --text-card--line-height: 1.4;
+  --text-caption: 0.8125rem; /* 13px secondary information */
+  --text-caption--line-height: 1.4;
+
+  /* Portal sidebar width from lg up (see components/portal/SidebarNav.tsx). */
+  --spacing-sidebar: 232px;
 }
 
 /*

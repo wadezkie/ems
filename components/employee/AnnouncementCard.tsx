@@ -40,17 +40,17 @@ export function AnnouncementCard({
       onClick={open}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open())}
       aria-label={`${title}${optimisticRead ? "" : ", unread"}`}
-      className={`${cardClass} relative flex cursor-pointer gap-6 px-6 pt-6 pb-5 transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-8`}
+      className={`${cardClass} relative flex cursor-pointer gap-4 px-4 py-3.5 transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-5`}
     >
-      <MegaphoneGlyph className="mt-1 size-12 shrink-0 text-megaphone" />
+      <MegaphoneGlyph className="mt-0.5 size-8 shrink-0 text-megaphone" />
       <div className="min-w-0 flex-1 pr-6">
-        <h2 className="text-f18 font-semibold text-black">{title}</h2>
-        <p className="mt-3 text-f16 leading-relaxed whitespace-pre-line text-[#6b6b6b]">{body}</p>
-        <p className="mt-6 text-f16 text-ink">{date}</p>
+        <h2 className="text-card font-semibold text-black">{title}</h2>
+        <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-[#5f5f5f]">{body}</p>
+        <p className="mt-2 text-caption text-subtle">{date}</p>
       </div>
-      {!optimisticRead && <span aria-hidden className="absolute top-6 right-6 size-2.5 rounded-full bg-unread" />}
+      {!optimisticRead && <span aria-hidden className="absolute top-4 right-4 size-2 rounded-full bg-unread" />}
       {isNew && (
-        <span className="absolute right-6 bottom-5 rounded-[calc(var(--spacing)*1.5)] bg-[#dcd6fb] px-2.5 py-0.5 text-f12 font-medium text-[#3d2fc4]">
+        <span className="absolute right-4 bottom-3.5 rounded-full bg-[#dcd6fb] px-2 py-0.5 text-xs font-medium text-[#3d2fc4]">
           New
         </span>
       )}

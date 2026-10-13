@@ -13,24 +13,24 @@ export function UpcomingLeavePanel({ leave, showEmployee = false }: { leave: Lea
   const types = [...ALWAYS_SHOWN, ...(["emergency", "other"] as LeaveType[]).filter((t) => leave.some((l) => l.leave_type === t))];
 
   return (
-    <Panel title="Upcoming Leave" className="mt-14 lg:max-w-112.5">
-      <hr className="mt-3 border-card-border/70 lg:mr-10" />
+    <Panel title="Upcoming Leave">
+      <hr className="mt-3 border-line" />
       <ul>
         {types.map((type, index) => {
           const rows = leave.filter((l) => l.leave_type === type).slice(0, showEmployee ? 3 : 1);
           return (
-            <li key={type} className={index > 0 ? "mt-5 border-t border-card-border/70 pt-5 lg:mr-10" : "mt-5 lg:mr-10"}>
+            <li key={type} className={index > 0 ? "mt-3 border-t border-line pt-3" : "mt-3"}>
               {rows.length === 0 ? (
                 <>
-                  <p className="text-f22 font-medium text-heading">{titleCase(type)} Leave</p>
-                  <p className="text-f14 text-subtle">None</p>
+                  <p className="text-sm font-medium text-heading">{titleCase(type)} Leave</p>
+                  <p className="mt-0.5 text-caption text-subtle">None</p>
                 </>
               ) : (
                 rows.map((row, i) => (
-                  <div key={row.id} className={`flex items-center justify-between gap-4 ${i > 0 ? "mt-3" : ""}`}>
+                  <div key={row.id} className={`flex items-center justify-between gap-3 ${i > 0 ? "mt-2" : ""}`}>
                     <div className="min-w-0">
-                      {i === 0 && <p className="text-f22 font-medium text-heading">{titleCase(type)} Leave</p>}
-                      <p className="mt-2 text-f14 text-subtle">
+                      {i === 0 && <p className="text-sm font-medium text-heading">{titleCase(type)} Leave</p>}
+                      <p className="mt-0.5 text-caption text-subtle">
                         {showEmployee && row.employee && <span className="font-semibold">{fullName(row.employee)} · </span>}
                         {formatDateRange(row.start_date, row.end_date)}
                       </p>
@@ -49,18 +49,18 @@ export function UpcomingLeavePanel({ leave, showEmployee = false }: { leave: Lea
 
 export function RecentAnnouncementPanel({ announcement }: { announcement: AnnouncementRow | null }) {
   return (
-    <Panel title="Recent Announcement" className="mt-9 min-h-45 lg:max-w-236.5">
+    <Panel title="Recent Announcement">
       {announcement ? (
         <>
-          <p className="mt-4 text-f14 text-subtle">
-            <span className="font-semibold">{announcement.title}</span> — {announcement.body}
+          <p className="mt-3 line-clamp-4 text-sm text-body">
+            <span className="font-semibold text-ink">{announcement.title}</span> — {announcement.body}
           </p>
-          <p className="mt-5 text-f14 text-subtle">
+          <p className="mt-3 text-caption text-subtle">
             <time dateTime={announcement.published_at}>{formatTimestampDate(announcement.published_at)}</time>
           </p>
         </>
       ) : (
-        <p className="mt-4 text-f14 text-subtle">No announcements yet.</p>
+        <p className="mt-3 text-sm text-muted">No announcements yet.</p>
       )}
     </Panel>
   );
