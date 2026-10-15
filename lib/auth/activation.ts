@@ -60,12 +60,13 @@ export async function requestActivationLink(input: { employeeId: string; company
 
   if (employee.activation_status === "active") {
     const message = alreadyActiveEmail({ name: greetingName(employee), loginUrl: `${env.appUrl}/login` });
-    await sendEmail({
+    const delivery = await sendEmail({
       ...message,
       to: { email: employee.email },
       template: "activation_already_active",
       related: { table: "employees", id: employee.id },
     });
+    if (!delivery.ok) throw new Error("Already-active email delivery failed");
     return;
   }
   if (employee.activation_status !== "pending_activation") return;
@@ -86,12 +87,13 @@ export async function requestActivationLink(input: { employeeId: string; company
     link,
     expiresMinutes: ACTIVATION_TOKEN_TTL_MINUTES,
   });
-  await sendEmail({
+  const delivery = await sendEmail({
     ...message,
     to: { email: employee.email },
     template: "activation_verify",
     related: { table: "employees", id: employee.id },
   });
+  if (!delivery.ok) throw new Error("Activation email delivery failed");
 }
 
 /** Looks up an open token without consuming it. */
