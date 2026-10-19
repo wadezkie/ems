@@ -14,16 +14,15 @@ import { CheckIcon, DotIcon, PersonIcon } from "./icons";
 
 type FieldName = keyof CredentialsInput;
 
-const initialState: CredentialsState = { errors: {}, values: { currentUsername: "", newUsername: "" } };
+const initialState: CredentialsState = { errors: {}, values: { newUsername: "" } };
 
 /**
- * Step 3 of activation. The server reads the verified token from an httpOnly
- * cookie; nothing here proves verification on its own.
+ * Step 2 of activation. The server checks the signed-in temporary session;
+ * nothing here proves it on its own.
  */
 export function CredentialsForm() {
   const [state, formAction, pending] = useActionState(updateDefaultCredentials, initialState);
   const [values, setValues] = useState<CredentialsInput>({
-    currentUsername: "",
     newUsername: "",
     newPassword: "",
     confirmPassword: "",
@@ -65,21 +64,7 @@ export function CredentialsForm() {
         </Notice>
       )}
 
-      <Field label="Current Username" error={errorFor("currentUsername")}>
-        {(props) => (
-          <TextInput
-            {...props}
-            {...bind("currentUsername")}
-            icon={<PersonIcon />}
-            placeholder="Enter your default username"
-            autoComplete="off"
-            autoCapitalize="none"
-            spellCheck={false}
-          />
-        )}
-      </Field>
-
-      <Field label="New Username" error={errorFor("newUsername")} className="mt-14">
+      <Field label="New Username" error={errorFor("newUsername")}>
         {(props) => (
           <TextInput
             {...props}

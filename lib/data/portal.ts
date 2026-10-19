@@ -76,7 +76,8 @@ export type EmployeeRow = {
   employee_id: string;
   first_name: string | null;
   last_name: string | null;
-  username: string;
+  /** Null while the account is pending activation. */
+  username: string | null;
   email: string;
   position: string | null;
   avatar_url: string | null;

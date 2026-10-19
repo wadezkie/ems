@@ -1,8 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ACTIVATION_COOKIE, ACTIVATION_COOKIE_PATH, completeActivation, requestActivationLink } from "@/lib/auth/activation";
+import { completeActivation, hasOpenTemporaryCredentials, requestTemporaryCredentials } from "@/lib/auth/activation";
 import { roleHome, type AppRole } from "@/lib/auth/dal";
 import { checkRateLimits, clientIp } from "@/lib/auth/security";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -38,7 +37,7 @@ export async function requestActivation(_prev: ActivationState, formData: FormDa
   if (hasErrors(errors)) return { status: "error", errors, values };
 
   try {
-    await requestActivationLink(values);
+    await requestTemporaryCredentials(values);
   } catch (error) {
     console.error("requestActivation failed", error);
     return { status: "error", errors: {}, message: GENERIC_ERROR, values };
@@ -52,28 +51,24 @@ export async function requestActivation(_prev: ActivationState, formData: FormDa
 export type CredentialsState = {
   errors: CredentialsErrors;
   message?: string;
-  values: { currentUsername: string; newUsername: string };
+  values: { newUsername: string };
 };
 
 export async function updateDefaultCredentials(_prev: CredentialsState, formData: FormData): Promise<CredentialsState> {
   const input = {
-    currentUsername: field(formData, "currentUsername"),
     newUsername: field(formData, "newUsername"),
     newPassword: field(formData, "newPassword"),
     confirmPassword: field(formData, "confirmPassword"),
   };
   // Passwords are never echoed back to the form.
-  const values = { currentUsername: input.currentUsername, newUsername: input.newUsername };
+  const values = { newUsername: input.newUsername };
 
   const errors = validateCredentials(input);
   if (hasErrors(errors)) return { errors, values };
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ACTIVATION_COOKIE)?.value ?? "";
-
   let result;
   try {
-    result = await completeActivation({ token, ...input });
+    result = await completeActivation(input);
   } catch (error) {
     console.error("updateDefaultCredentials failed", error);
     return { errors: {}, message: GENERIC_ERROR, values };
@@ -81,21 +76,22 @@ export async function updateDefaultCredentials(_prev: CredentialsState, formData
 
   if (!result.ok) {
     switch (result.reason) {
-      case "invalid_link":
-        cookieStore.delete({ name: ACTIVATION_COOKIE, path: ACTIVATION_COOKIE_PATH });
-        redirect("/activate?link=expired");
-      case "username_mismatch":
-        return { errors: { currentUsername: "Current username is incorrect." }, values };
+      case "session_expired":
+        await (await createClient()).auth.signOut();
+        redirect("/login?activation=expired");
+      case "same_username":
+        return { errors: { newUsername: "Choose a username different from your temporary username." }, values };
       case "username_taken":
         return { errors: { newUsername: "This username is already taken." }, values };
       case "weak_password":
         return { errors: { newPassword: "Choose a stronger password." }, values };
+      case "same_password":
+        return { errors: { newPassword: "New password must be different from your temporary password." }, values };
       case "rate_limited":
         return { errors: {}, message: RATE_LIMITED, values };
     }
   }
 
-  cookieStore.delete({ name: ACTIVATION_COOKIE, path: ACTIVATION_COOKIE_PATH });
   redirect("/activate/success");
 }
 
@@ -110,7 +106,9 @@ export type LoginState = {
 };
 
 const INVALID_CREDENTIALS = "Invalid username or password!";
-const NOT_ACTIVATED = "Your account is not activated yet. Activate your account first, then log in with your new username and password.";
+const NOT_ACTIVATED =
+  "Your account is not activated yet. Log in with the temporary password from your activation email, or request one here:";
+const TEMPORARY_EXPIRED = "Your temporary password has expired. Request new temporary credentials here:";
 const DISABLED = "This account has been disabled. Please contact your department manager or HR.";
 
 export async function signIn(_prev: LoginState, formData: FormData): Promise<LoginState> {
@@ -123,7 +121,7 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
   };
   if (errors.username || errors.password) return { errors, username };
 
-  let role: AppRole;
+  let destination: string;
   try {
     const allowed = await checkRateLimits([
       { action: "login:username", key: username, max: 5, windowMinutes: 15 },
@@ -140,12 +138,6 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
     if (error) throw new Error(error.message);
     if (!account) return { errors: { username: INVALID_CREDENTIALS }, username };
 
-    // Default usernames are handed out by HR, so saying "not activated" for one
-    // reveals nothing new. Pending accounts have a random, unknown password.
-    if (account.activation_status === "pending_activation") {
-      return { errors: {}, message: NOT_ACTIVATED, needsActivation: true, username };
-    }
-
     // 2. Supabase verifies the password.
     const supabase = await createClient();
     const { data: session, error: signInError } = await supabase.auth.signInWithPassword({
@@ -154,31 +146,44 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
     });
     if (signInError || !session.user) {
       if (signInError && signInError.code !== "invalid_credentials") console.error("signIn: Supabase rejected sign-in", signInError.code, signInError.message);
+      // Default usernames are handed out by HR, so saying "not activated" for one
+      // reveals nothing new.
+      if (account.activation_status === "pending_activation") {
+        return { errors: {}, message: NOT_ACTIVATED, needsActivation: true, username };
+      }
       return { errors: { username: INVALID_CREDENTIALS }, username };
     }
 
     // 3–4. Re-read status and role as the signed-in user (RLS: own row only).
     const { data: employee, error: profileError } = await supabase
       .from("employees")
-      .select("role, activation_status")
+      .select("id, role, activation_status")
       .eq("auth_user_id", session.user.id)
       .maybeSingle();
     if (profileError) throw new Error(profileError.message);
 
-    if (!employee || employee.activation_status !== "active") {
+    // Temporary credentials: continue to Change Default Credentials while still valid.
+    if (employee?.activation_status === "pending_activation") {
+      if (!(await hasOpenTemporaryCredentials(employee.id))) {
+        await supabase.auth.signOut();
+        return { errors: {}, message: TEMPORARY_EXPIRED, needsActivation: true, username };
+      }
+      destination = "/activate/credentials";
+    } else if (!employee || employee.activation_status !== "active") {
       if (!employee) console.error("signIn: no employee row readable for signed-in user");
       await supabase.auth.signOut();
       // Disabled is only revealed after the correct password was given.
       if (employee?.activation_status === "disabled") return { errors: {}, message: DISABLED, username };
       return { errors: { username: INVALID_CREDENTIALS }, username };
+    } else {
+      destination = roleHome(employee.role as AppRole);
     }
-    role = employee.role;
   } catch (error) {
     console.error("signIn failed", error);
     return { errors: {}, message: GENERIC_ERROR, username };
   }
 
-  redirect(roleHome(role));
+  redirect(destination);
 }
 
 export async function signOut() {

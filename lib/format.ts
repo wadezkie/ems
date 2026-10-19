@@ -63,7 +63,7 @@ export function titleCase(value: string) {
     .join(" ");
 }
 
-export function fullName(person: { first_name: string | null; last_name: string | null; username?: string }) {
+export function fullName(person: { first_name: string | null; last_name: string | null; username?: string | null }) {
   return [person.first_name, person.last_name].filter(Boolean).join(" ") || person.username || "—";
 }
 

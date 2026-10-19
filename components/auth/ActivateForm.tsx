@@ -11,7 +11,7 @@ type FieldName = keyof ActivationErrors;
 
 /**
  * Step 1 of activation. Submitting valid details never activates the account;
- * it only asks the server to email a verification link.
+ * it only asks the server to email temporary login credentials.
  */
 export function ActivateForm() {
   const [state, formAction, pending] = useActionState<ActivationState, FormData>(requestActivation, { status: "idle" });
@@ -48,13 +48,14 @@ export function ActivateForm() {
         <MailCheckIcon className="size-24 text-primary" />
         <h2 className="mt-6 text-f32 leading-[1.2] font-semibold text-ink">Check your email</h2>
         <p role="status" className="mt-5 text-f20 leading-[1.5] text-body">
-          If the details match an employee record that still needs activation, we sent a verification link to{" "}
-          <strong className="font-semibold break-all text-ink">{state.email}</strong>. The link expires in 30 minutes.
+          If the details match an employee record that still needs activation, we sent your username and temporary
+          password to <strong className="font-semibold break-all text-ink">{state.email}</strong>. Log in with them
+          within 30 minutes to set your own credentials.
         </p>
         <p className="mt-8 text-f18 leading-[1.5] text-muted">
           Didn&apos;t get it? Check your spam folder, or{" "}
           <button type="button" onClick={() => setShowForm(true)} className={`text-f18 ${linkClass}`}>
-            send a new link
+            request new credentials
           </button>
           .
         </p>
@@ -110,7 +111,7 @@ export function ActivateForm() {
       </Field>
 
       <PrimaryButton type="submit" disabled={pending} className="mt-16">
-        {pending ? "Sending link…" : "Activate Account"}
+        {pending ? "Sending credentials…" : "Activate Account"}
       </PrimaryButton>
 
       <LoginFooter />

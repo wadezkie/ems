@@ -47,7 +47,6 @@ export function validateActivation(employeeId: string, companyEmail: string): Ac
 }
 
 export type CredentialsInput = {
-  currentUsername: string;
   newUsername: string;
   newPassword: string;
   confirmPassword: string;
@@ -57,15 +56,11 @@ export type CredentialsErrors = Partial<Record<keyof CredentialsInput, string>>;
 
 export function validateCredentials(input: CredentialsInput): CredentialsErrors {
   const errors: CredentialsErrors = {};
-  const current = normalizeUsername(input.currentUsername);
   const next = normalizeUsername(input.newUsername);
-
-  if (!current) errors.currentUsername = "Please enter your current username.";
 
   if (!next) errors.newUsername = "Please enter a new username.";
   else if (!USERNAME.test(next))
     errors.newUsername = "Use 4–30 characters: letters, numbers, dot, dash, or underscore. Start with a letter.";
-  else if (next === current) errors.newUsername = "New username must be different from your current username.";
 
   if (!input.newPassword) errors.newPassword = "Please enter a new password.";
   else if (!PASSWORD_RULES.every((r) => r.test(input.newPassword)))

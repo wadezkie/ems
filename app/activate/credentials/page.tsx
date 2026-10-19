@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { CredentialsForm } from "@/components/auth/CredentialsForm";
-import { ACTIVATION_COOKIE, getActivationLinkStatus } from "@/lib/auth/activation";
+import { getPendingActivationSession } from "@/lib/auth/activation";
 
 export const metadata: Metadata = { title: "Change Default Credentials" };
 
 /**
- * Step 3 of activation. Reachable only with a verified, unexpired token in the
- * httpOnly cookie set by /activate/verify; otherwise back to Activate Account.
+ * Step 2 of activation. Reachable only while signed in with a still-valid
+ * temporary password (see signIn); otherwise back to Login.
  */
 export default function CredentialsPage() {
   return (
@@ -26,9 +25,9 @@ export default function CredentialsPage() {
         </>
       }
       title="Change Default Credentials"
-      subtitle="Your email is verified. Set a new username and password to finish activating your account."
+      subtitle="You logged in with temporary credentials. Set a new username and password to finish activating your account."
     >
-      <Suspense fallback={<p className="mt-16 text-f20 text-muted">Checking your verification link…</p>}>
+      <Suspense fallback={<p className="mt-16 text-f20 text-muted">Checking your session…</p>}>
         <VerifiedCredentialsForm />
       </Suspense>
     </AuthLayout>
@@ -36,10 +35,9 @@ export default function CredentialsPage() {
 }
 
 async function VerifiedCredentialsForm() {
-  const token = (await cookies()).get(ACTIVATION_COOKIE)?.value ?? "";
-  // Token expiry compares against the current time, so never run this in a prefetch.
+  // Expiry compares against the current time, so never run this in a prefetch.
   await connection();
-  const link = await getActivationLinkStatus(token).catch(() => ({ valid: false }) as const);
-  if (!link.valid) redirect("/activate?link=expired");
+  const pending = await getPendingActivationSession().catch(() => null);
+  if (!pending) redirect("/login?activation=expired");
   return <CredentialsForm />;
 }

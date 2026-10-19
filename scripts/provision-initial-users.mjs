@@ -28,8 +28,9 @@ if (expectedRef && expectedRef !== ref) {
 const DEPARTMENT = { code: "IT", name: "Information Technology Department" };
 
 const ACCOUNTS = [
-  { employee_id: "MGR-0001", email: "delarosajhonwade@gmail.com", username: "mgr0001", role: "department_manager" },
-  { employee_id: "EMP-0001", email: "jhonwade80@gmail.com", username: "emp0001", role: "employee" },
+  // No username: a temporary one is generated when the employee requests activation.
+  { employee_id: "MGR-0001", email: "delarosajhonwade@gmail.com", role: "department_manager" },
+  { employee_id: "EMP-0001", email: "jhonwade80@gmail.com", role: "employee" },
 ];
 
 const admin = createClient(url, secretKey, {

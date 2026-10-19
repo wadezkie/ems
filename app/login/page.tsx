@@ -28,6 +28,9 @@ export default function LoginPage() {
         <QueryNotice param="password" value="changed" tone="success">
           Your password was changed. Log in with your new password.
         </QueryNotice>
+        <QueryNotice param="activation" value="expired" tone="error">
+          Your temporary password has expired. Request new temporary credentials from Activate Account.
+        </QueryNotice>
       </Suspense>
       <LoginForm />
     </AuthLayout>
